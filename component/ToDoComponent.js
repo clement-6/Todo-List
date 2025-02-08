@@ -21,6 +21,7 @@ const ToDoComponent = () => {
     if(title.trim()){
         addTask(title);
         setTitle('');
+        
     }
    }
 
@@ -60,7 +61,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#E9F4FA',
-        marginTop: Constants.statusBarHeight
+        justifyContent: "space-between",
+        alignItems: "stretch",
+
     },
     text: {
         marginTop: 25,
