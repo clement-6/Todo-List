@@ -16,7 +16,7 @@ const Page = ({ filter }) => {
     if (filter === "Complete") return task.completed;
   });
   return (
-    <ScrollView>
+    <ScrollView style={{flex:1}}>
       <View style={styles.page}>
         {filteredTasks.map((task) => (
           <ToDoItem key={task.id} task={task} />
