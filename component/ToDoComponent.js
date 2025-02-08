@@ -21,6 +21,7 @@ const ToDoComponent = () => {
     if(title.trim()){
         addTask(title);
         setTitle('');
+        
     }
    }
 
