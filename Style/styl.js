@@ -32,7 +32,13 @@ const styles = StyleSheet.create({
     },
     tabItem:{
         flexDirection: 'row',
-    }
+    },
+    activeLabel: {
+        color: 'black',
+    },
+    inactiveLabel: {
+        color: 'gray',
+    },
 
 })
 

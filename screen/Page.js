@@ -1,28 +1,23 @@
 
-import { ScrollView, View } from "react-native";
+import { FlatList, View } from "react-native";
 import ToDoItem from "../component/ToDoItemComponent";
 import styles from "../Style/styl";
-import { useContext } from "react";
-import { TaskContext } from "../Context/TaskProvider";
-
-
+import useTask from "../hooks/useTask";
 
 const Page = ({ filter }) => {
 
-  const { tasks } = useContext(TaskContext);
-  const filteredTasks = tasks.filter((task) => {
-    if (filter === "All") return true;
-    if (filter === "Active") return !task.completed;
-    if (filter === "Complete") return task.completed;
-  });
+  const { tasks } = useTask();
+  const filteredMethod = {
+    All: () => true,
+    Active: (task) => !task.completed,
+    Complete: (task) => task.completed,
+  };
+
+  const filteredTasks = tasks.filter(filteredMethod[filter]);
   return (
-    <ScrollView style={{flex:1}}>
       <View style={styles.page}>
-        {filteredTasks.map((task) => (
-          <ToDoItem key={task.id} task={task} />
-        ))}
+        <FlatList data={filteredTasks} keyExtractor={(item) => item.id} renderItem={({ item }) => <ToDoItem task={item} />}/>
       </View>
-    </ScrollView>
   );
 }
 

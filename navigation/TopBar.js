@@ -10,6 +10,12 @@ import { Text, View } from 'react-native';
 
 const Tab = createMaterialTopTabNavigator()
 
+const tabs = {
+  All: {icon: "ballot", label: "All"},
+  Active: {icon: "task", label: "Active"},
+  Complete: {icon: "task-alt", label: "Complete"},
+}
+
 const TopBar = () => {
   return (
     <Tab.Navigator
@@ -17,32 +23,17 @@ const TopBar = () => {
         tabBarStyle: styles.containerStyle,
         tabBarIndicatorStyle: styles.indicator,
         tabBarLabelStyle: styles.label,
-  tabBarLabel: ({ focused, color}) => {
-          let iconName; let label;
-
-          if (route.name === "All") {
-            iconName = focused ? "ballot" : "ballot";
-            label = focused ? "All" : "All";
-          } else if (route.name === "Active") {
-            iconName = focused ? "task" : "task";
-            label = focused ? "Active" : "Active";
-          } else if (route.name === "Complete") {
-            iconName = focused ? "task-alt" : "task-alt";
-            label = focused ? "Complete" : "Complete";
-          }
-          return (
+  tabBarLabel: ({ focused, color}) =>  (
             <View style={styles.tabItem}>
-                <MaterialIcons name={iconName} size={20} color={color} />
-                <Text style={[styles.label , {color:focused ? "black" : "gray"}]}>{label}</Text>
+                <MaterialIcons name={tabs[route.name].icon} size={20} color={color} />
+                <Text style={[styles.label , focused ? styles.activeLabel : styles.inactiveLabel]}>{tabs[route.name].label}</Text>
             </View>
-
           )
-        },
       })}
     >
-      <Tab.Screen name="All">{() => <Page filter="All" />}</Tab.Screen>
-      <Tab.Screen name="Active">{() => <Page filter="Active" />}</Tab.Screen>
-      <Tab.Screen name="Complete">{() => <Page filter="Complete" />}</Tab.Screen>
+     {Object.keys(tabs).map((filter) => (
+      <Tab.Screen key={filter} name={filter}>{() => <Page filter={filter} />}</Tab.Screen>
+     ))}
     </Tab.Navigator>
   );
 };

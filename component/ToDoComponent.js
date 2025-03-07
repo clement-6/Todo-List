@@ -1,58 +1,75 @@
-import { MaterialIcons } from "@expo/vector-icons";
-import React, {  useContext, useState } from "react";
-import { StyleSheet, View, Text, TextInput, FlatList,  TouchableOpacity} from "react-native";
-import TabBarComponent from "../navigation/TabBarComponent";
+import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
+import React, { useState } from "react";
+import { StyleSheet, View, Text, TextInput, Alert,  TouchableOpacity, StatusBar, Pressable, Modal} from "react-native";
 import ToDoItem from "./ToDoItemComponent";
 import { NavigationContainer } from '@react-navigation/native';
 import TopBar from "../navigation/TopBar";
 import DATA from "../Data/data";
 import datas from "../Data/datas.json";
-import Constants from 'expo-constants';
-import { TaskContext } from "../Context/TaskProvider";
+import { SafeAreaView } from "react-native-safe-area-context";
+import useTask from "../hooks/useTask";
+
 
 
 
 const ToDoComponent = () => {
    
-    const {addTask} = useContext(TaskContext);
-    const [title, setTitle] = useState('');
-    
-   function handleAddtask() {
-    if(title.trim()){
+    const { addTask } = useTask();
+    const [title, setTitle] = useState("");
+    const [modalVisible, setModalVisible] = useState(false);
+
+    function handleAddtask() {
+      if (title.trim() !== "") {
         addTask(title);
-        setTitle('');
-        
+        setTitle("");
+      }else{
+        Alert.alert("Veuillez remplir le champ")
+      }
     }
-   }
 
-   
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>TO-DO LIST</Text>
-            <View style={styles.write}>
-                <TextInput style={styles.input} value={title} onChangeText={setTitle} placeholder="  What needs to be done? " />
-                <TouchableOpacity style={styles.add} onPress={handleAddtask}>
-                    <MaterialIcons name="add-circle-outline" size={40} color="green" />
-                </TouchableOpacity>
-                
-            </View> 
-      {/* <TabBarComponent /> */}
-      <NavigationContainer style={{flex:1}}>
-      <TopBar/>
-      </NavigationContainer>
+      <SafeAreaView style={styles.container}>
+        <StatusBar backgroundColor="#000" />
+        <Text style={styles.text}>TO-DO LIST</Text>
+        <View style={styles.write}>
+          <TextInput
+            style={styles.input}
+            value={title}
+            onChangeText={setTitle}
+            placeholder="  What needs to be done? "
+            onSubmitEditing={handleAddtask}
+          />
+          <TouchableOpacity style={styles.add} onPress={handleAddtask}>
+            <MaterialIcons name="note-add" size={40} color="skyblue" />
+          </TouchableOpacity>
+        </View>
+        <NavigationContainer>
+          <TopBar />
+        </NavigationContainer>
 
-       {/* <View>
-                 <FlatList data={tasks} renderItem={({ item }) => <Item title={item.title} task={item} deleteTask={deleteTask}/>} keyExtractor={item => item.id} /> 
-               {tasks.map(task => (
-                <ToDoItem key={task.id} task={task} deleteTask={deleteTask}/>
-              ))} 
-             
-            </View>  */}
+        <View style={styles.circleButton}>
+          <Pressable style={styles.addButton} onPress={() => setModalVisible(true)}>
+            <MaterialIcons name="add" size={20} color="#25292e" />
+          </Pressable>
+        </View>
 
-      
-              
-            </View>   
-    )
+      <Modal animationType="slide" transparent={true} visible={modalVisible}>
+        <View style={styles.modalContent}>
+          <View style={styles.titleContainer}>
+            <AntDesign name="closesquare" size={20} color="#25292e"/>
+          </View>
+          <View style={styles.modalContainer}>
+            <TextInput value={title} onChangeText={setTitle} placeholder="Ajouter une tache" style={{borderBottomWidth: 1, width: 300}}/>
+            <Pressable>
+              <Entypo name="add-to-list" size={30} color="#25292e" />
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
+    
+      </SafeAreaView>
+    );
 }
 
    
@@ -125,8 +142,51 @@ const styles = StyleSheet.create({
     tab_view: {
         marginTop: 10
 
-    }
+    },
+    circleButton: {
+        position: 'absolute',
+        width: 70,
+        height: 70,
+        justifyContent: 'center',
+        right: 165,
+        bottom: 30,
+        borderWidth: 4,
+        borderColor: '#0094ff',
+        borderRadius: 50,
+        padding: 3
+    },
+    addButton: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 50,
+      backgroundColor: '#fff',
+    },
+    modalContent: {
+      height: '10%',
+      width: '100%',
+      backgroundColor: '#fff',
+      borderTopRightRadius : 18,
+      borderTopLeftRadius: 18,
+      position: 'absolute',
+      bottom: 0,
+    },
+    titleContainer: {
+      height: '25%',
+      backgroundColor: '#f4f4f4',
+      borderTopRightRadius : 10,
+      borderTopLeftRadius: 10,
+      paddingHorizontal: 20,
+      
+      alignItems: 'flex-end',
+      
+     
 
+    },
+    modalContainer:{
+      flexDirection: 'row',
+     
+    }
 
 })
 
